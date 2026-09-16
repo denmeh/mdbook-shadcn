@@ -1,0 +1,284 @@
+From b3d8e5630542191451e11397bad31be164a4f91a Mon Sep 17 00:00:00 2001
+From: denmeh <mehillideny13@gmail.com>
+Date: Wed, 16 Sep 2026 01:56:53 +0200
+Subject: [PATCH] Rename CLI to mdbook-shadcn
+
+Keep internal crates named mdbook-* so rebases onto upstream stay small.
+---
+ Cargo.lock                           | 66 ++++++++++++++--------------
+ Cargo.toml                           |  6 +--
+ README.md                            | 10 +++--
+ src/main.rs                          |  6 +--
+ tests/gui/runner.rs                  |  2 +-
+ tests/testsuite/book_test.rs         |  2 +-
+ tests/testsuite/cli/help.term.svg    | 10 ++---
+ tests/testsuite/cli/no_args.term.svg | 10 ++---
+ 8 files changed, 57 insertions(+), 55 deletions(-)
+
+diff --git a/Cargo.lock b/Cargo.lock
+index 5ffcf668..0f8c6d1f 100644
+--- a/Cargo.lock
++++ b/Cargo.lock
+@@ -983,39 +983,6 @@ version = "0.8.4"
+ source = "registry+https://github.com/rust-lang/crates.io-index"
+ checksum = "47e1ffaa40ddd1f3ed91f717a33c8c0ee23fff369e3aa8772b9605cc1d22f4c3"
+ 
+-[[package]]
+-name = "mdbook"
+-version = "0.5.4"
+-dependencies = [
+- "anyhow",
+- "axum",
+- "clap",
+- "clap_complete",
+- "futures-util",
+- "glob",
+- "ignore",
+- "mdbook-core",
+- "mdbook-driver",
+- "mdbook-html",
+- "mdbook-preprocessor",
+- "mdbook-renderer",
+- "notify",
+- "notify-debouncer-mini",
+- "opener",
+- "pathdiff",
+- "regex",
+- "select",
+- "semver",
+- "serde_json",
+- "snapbox",
+- "tempfile",
+- "tokio",
+- "tower-http",
+- "tracing",
+- "tracing-subscriber",
+- "walkdir",
+-]
+-
+ [[package]]
+ name = "mdbook-compare"
+ version = "0.0.0"
+@@ -1119,6 +1086,39 @@ dependencies = [
+  "serde_json",
+ ]
+ 
++[[package]]
++name = "mdbook-shadcn"
++version = "0.5.4"
++dependencies = [
++ "anyhow",
++ "axum",
++ "clap",
++ "clap_complete",
++ "futures-util",
++ "glob",
++ "ignore",
++ "mdbook-core",
++ "mdbook-driver",
++ "mdbook-html",
++ "mdbook-preprocessor",
++ "mdbook-renderer",
++ "notify",
++ "notify-debouncer-mini",
++ "opener",
++ "pathdiff",
++ "regex",
++ "select",
++ "semver",
++ "serde_json",
++ "snapbox",
++ "tempfile",
++ "tokio",
++ "tower-http",
++ "tracing",
++ "tracing-subscriber",
++ "walkdir",
++]
++
+ [[package]]
+ name = "mdbook-summary"
+ version = "0.5.4"
+diff --git a/Cargo.toml b/Cargo.toml
+index 95254fe0..482d575d 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -70,7 +70,7 @@ tracing-subscriber = { version = "0.3.23", features = ["env-filter"] }
+ walkdir = "2.5.0"
+ 
+ [package]
+-name = "mdbook"
++name = "mdbook-shadcn"
+ version = "0.5.4"
+ authors = [
+     "Mathieu David <mathieudavid@mathieudavid.org>",
+@@ -84,7 +84,7 @@ keywords = ["book", "gitbook", "rustbook", "markdown"]
+ license.workspace = true
+ readme = "README.md"
+ repository.workspace = true
+-description = "Creates a book from markdown files"
++description = "mdBook fork with shadcn/ui; creates a book from markdown files"
+ rust-version.workspace = true
+ 
+ [dependencies]
+@@ -131,7 +131,7 @@ search = ["mdbook-html/search"]
+ 
+ [[bin]]
+ doc = false
+-name = "mdbook"
++name = "mdbook-shadcn"
+ 
+ [[example]]
+ name = "nop-preprocessor"
+diff --git a/README.md b/README.md
+index 224f3ad0..d29be887 100644
+--- a/README.md
++++ b/README.md
+@@ -1,10 +1,12 @@
+-# mdBook
++# mdbook-shadcn
+ 
+-[![CI Status](https://github.com/rust-lang/mdBook/actions/workflows/main.yml/badge.svg)](https://github.com/rust-lang/mdBook/actions/workflows/main.yml)
+-[![crates.io](https://img.shields.io/crates/v/mdbook.svg)](https://crates.io/crates/mdbook)
+ [![LICENSE](https://img.shields.io/github/license/rust-lang/mdBook.svg)](LICENSE)
+ 
+-mdBook is a utility to create modern online books from Markdown files.
++mdbook-shadcn is a fork of [mdBook](https://github.com/rust-lang/mdBook), a utility to create modern online books from Markdown files.
++
++```bash
++cargo install mdbook-shadcn
++```
+ 
+ Check out the **[User Guide]** for a list of features and installation and usage information.
+ The User Guide also serves as a demonstration to showcase what a book looks like.
+diff --git a/src/main.rs b/src/main.rs
+index 68fea9c4..8dc87940 100644
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -39,7 +39,7 @@ fn main() {
+             clap_complete::generate(
+                 *shell,
+                 &mut complete_app,
+-                "mdbook",
++                "mdbook-shadcn",
+                 &mut std::io::stdout().lock(),
+             );
+             Ok(())
+@@ -63,8 +63,8 @@ fn create_clap_command() -> Command {
+         .propagate_version(true)
+         .arg_required_else_help(true)
+         .after_help(
+-            "For more information about a specific command, try `mdbook <command> --help`\n\
+-             The source code for mdBook is available at: https://github.com/rust-lang/mdBook",
++            "For more information about a specific command, try `mdbook-shadcn <command> --help`\n\
++             mdbook-shadcn is a fork of mdBook: https://github.com/rust-lang/mdBook",
+         )
+         .subcommand(cmd::init::make_subcommand())
+         .subcommand(cmd::build::make_subcommand())
+diff --git a/tests/gui/runner.rs b/tests/gui/runner.rs
+index f036812c..2dd594dc 100644
+--- a/tests/gui/runner.rs
++++ b/tests/gui/runner.rs
+@@ -84,7 +84,7 @@ fn build_books(out_dir: &Path) {
+             continue;
+         }
+         println!("Building `{}`", path.display());
+-        let mut cmd = Command::new(env!("CARGO_BIN_EXE_mdbook"));
++        let mut cmd = Command::new(env!("CARGO_BIN_EXE_mdbook-shadcn"));
+         let output = cmd
+             .arg("build")
+             .arg("--dest-dir")
+diff --git a/tests/testsuite/book_test.rs b/tests/testsuite/book_test.rs
+index f29eab90..13f6426b 100644
+--- a/tests/testsuite/book_test.rs
++++ b/tests/testsuite/book_test.rs
+@@ -429,7 +429,7 @@ impl BookCommand {
+ 
+     /// Runs the command, and verifies the output.
+     fn run(&mut self) {
+-        let mut cmd = Command::new(env!("CARGO_BIN_EXE_mdbook"));
++        let mut cmd = Command::new(env!("CARGO_BIN_EXE_mdbook-shadcn"));
+         cmd.current_dir(&self.dir)
+             .args(&self.args)
+             .env_remove("MDBOOK_LOG")
+diff --git a/tests/testsuite/cli/help.term.svg b/tests/testsuite/cli/help.term.svg
+index e27fa313..f2d3d759 100644
+--- a/tests/testsuite/cli/help.term.svg
++++ b/tests/testsuite/cli/help.term.svg
+@@ -1,7 +1,7 @@
+ <svg width="740px" height="398px" xmlns="http://www.w3.org/2000/svg">
+   <style>
+     .fg { fill: #AAAAAA }
+-    .bg { background: #000000 }
++    .bg { fill: #000000 }
+     .container {
+       padding: 0 10px;
+       line-height: 18px;
+@@ -16,11 +16,11 @@
+   <rect width="100%" height="100%" y="0" rx="4.5" class="bg" />
+ 
+   <text xml:space="preserve" class="container fg">
+-    <tspan x="10px" y="28px"><tspan>Creates a book from markdown files</tspan>
++    <tspan x="10px" y="28px"><tspan>mdBook fork with shadcn/ui; creates a book from markdown files</tspan>
+ </tspan>
+     <tspan x="10px" y="46px">
+ </tspan>
+-    <tspan x="10px" y="64px"><tspan>Usage: mdbook[EXE] [COMMAND]</tspan>
++    <tspan x="10px" y="64px"><tspan>Usage: mdbook-shadcn [COMMAND]</tspan>
+ </tspan>
+     <tspan x="10px" y="82px">
+ </tspan>
+@@ -52,9 +52,9 @@
+ </tspan>
+     <tspan x="10px" y="334px">
+ </tspan>
+-    <tspan x="10px" y="352px"><tspan>For more information about a specific command, try `mdbook &lt;command&gt; --help`</tspan>
++    <tspan x="10px" y="352px"><tspan>For more information about a specific command, try `mdbook-shadcn &lt;command&gt; --help`</tspan>
+ </tspan>
+-    <tspan x="10px" y="370px"><tspan>The source code for mdBook is available at: https://github.com/rust-lang/mdBook</tspan>
++    <tspan x="10px" y="370px"><tspan>mdbook-shadcn is a fork of mdBook: https://github.com/rust-lang/mdBook</tspan>
+ </tspan>
+     <tspan x="10px" y="388px">
+ </tspan>
+diff --git a/tests/testsuite/cli/no_args.term.svg b/tests/testsuite/cli/no_args.term.svg
+index e27fa313..f2d3d759 100644
+--- a/tests/testsuite/cli/no_args.term.svg
++++ b/tests/testsuite/cli/no_args.term.svg
+@@ -1,7 +1,7 @@
+ <svg width="740px" height="398px" xmlns="http://www.w3.org/2000/svg">
+   <style>
+     .fg { fill: #AAAAAA }
+-    .bg { background: #000000 }
++    .bg { fill: #000000 }
+     .container {
+       padding: 0 10px;
+       line-height: 18px;
+@@ -16,11 +16,11 @@
+   <rect width="100%" height="100%" y="0" rx="4.5" class="bg" />
+ 
+   <text xml:space="preserve" class="container fg">
+-    <tspan x="10px" y="28px"><tspan>Creates a book from markdown files</tspan>
++    <tspan x="10px" y="28px"><tspan>mdBook fork with shadcn/ui; creates a book from markdown files</tspan>
+ </tspan>
+     <tspan x="10px" y="46px">
+ </tspan>
+-    <tspan x="10px" y="64px"><tspan>Usage: mdbook[EXE] [COMMAND]</tspan>
++    <tspan x="10px" y="64px"><tspan>Usage: mdbook-shadcn [COMMAND]</tspan>
+ </tspan>
+     <tspan x="10px" y="82px">
+ </tspan>
+@@ -52,9 +52,9 @@
+ </tspan>
+     <tspan x="10px" y="334px">
+ </tspan>
+-    <tspan x="10px" y="352px"><tspan>For more information about a specific command, try `mdbook &lt;command&gt; --help`</tspan>
++    <tspan x="10px" y="352px"><tspan>For more information about a specific command, try `mdbook-shadcn &lt;command&gt; --help`</tspan>
+ </tspan>
+-    <tspan x="10px" y="370px"><tspan>The source code for mdBook is available at: https://github.com/rust-lang/mdBook</tspan>
++    <tspan x="10px" y="370px"><tspan>mdbook-shadcn is a fork of mdBook: https://github.com/rust-lang/mdBook</tspan>
+ </tspan>
+     <tspan x="10px" y="388px">
+ </tspan>
+-- 
+2.55.0
+
