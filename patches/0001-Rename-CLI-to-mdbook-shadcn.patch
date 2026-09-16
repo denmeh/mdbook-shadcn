@@ -1,7 +1,7 @@
-From b3d8e5630542191451e11397bad31be164a4f91a Mon Sep 17 00:00:00 2001
+From c9d0c7742b7c10f64fb87c2175e7bc50dd4450a0 Mon Sep 17 00:00:00 2001
 From: denmeh <mehillideny13@gmail.com>
 Date: Wed, 16 Sep 2026 01:56:53 +0200
-Subject: [PATCH] Rename CLI to mdbook-shadcn
+Subject: [PATCH 1/2] Rename CLI to mdbook-shadcn
 
 Keep internal crates named mdbook-* so rebases onto upstream stay small.
 ---
